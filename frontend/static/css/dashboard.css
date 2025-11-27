@@ -1,0 +1,223 @@
+/* ===== DASHBOARD SPECIFIC STYLES ===== */
+
+/* Grid Layouts */
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.grid-4 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+/* KPI Summary Cards */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.summ-card {
+    background: linear-gradient(135deg, var(--color-primary) 0%, #2c4a7a 100%);
+    color: white;
+    padding: var(--spacing-xl);
+    text-align: center;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.summ-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+    background: linear-gradient(135deg, #2c4a7a 0%, var(--color-primary) 100%);
+}
+
+.summ-card > div {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-sm);
+    letter-spacing: -1px;
+}
+
+.summ-card span {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    font-weight: 500;
+    display: block;
+}
+
+/* Chart Card Styling */
+.card {
+    background: var(--color-neutral-white);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
+    border: 1px solid var(--color-neutral-gray);
+    animation: fadeCardIn 0.6s ease-out;
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-secondary);
+}
+
+.card h3 {
+    margin: 0 0 var(--spacing-lg) 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+/* Chart Container */
+.card canvas {
+    width: 100% !important;
+    height: 350px !important;
+    max-height: 350px;
+}
+
+/* Scroll Container */
+.scroll-x {
+    overflow-x: auto;
+}
+
+.scroll-x::-webkit-scrollbar {
+    height: 8px;
+}
+
+.scroll-x::-webkit-scrollbar-track {
+    background: var(--color-neutral-light);
+    border-radius: 4px;
+}
+
+.scroll-x::-webkit-scrollbar-thumb {
+    background: var(--color-secondary);
+    border-radius: 4px;
+}
+
+.scroll-x::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary);
+}
+
+/* Correlation Table */
+table.corr {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0;
+}
+
+table.corr tr {
+    border-bottom: 1px solid var(--color-neutral-gray);
+    transition: var(--transition);
+}
+
+table.corr tr:hover {
+    background: var(--color-neutral-light);
+}
+
+table.corr th,
+table.corr td {
+    padding: var(--spacing-md);
+    text-align: left;
+    font-size: 0.95rem;
+}
+
+table.corr th {
+    background: linear-gradient(135deg, var(--color-primary) 0%, #2c4a7a 100%);
+    color: white;
+    font-weight: 600;
+}
+
+table.corr td:last-child {
+    font-weight: 700;
+    color: white;
+    border-radius: 6px;
+    text-align: center;
+}
+
+/* Gender Badges */
+.gender-row {
+    font-weight: 600;
+    padding: var(--spacing-xs) 0;
+    display: block;
+}
+
+.gender-row.male {
+    color: var(--color-accent);
+}
+
+.gender-row.female {
+    color: #ff69b4;
+}
+
+/* Animations */
+@keyframes fadeCardIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .grid-2 {
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    }
+
+    .grid-3 {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .grid-4 {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .grid-2,
+    .grid-3,
+    .grid-4,
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .card h3 {
+        font-size: 1.1rem;
+    }
+
+    .card canvas {
+        height: 300px !important;
+    }
+
+    .summ-card > div {
+        font-size: 1.75rem;
+    }
+
+    table.corr th,
+    table.corr td {
+        padding: var(--spacing-sm);
+        font-size: 0.85rem;
+    }
+}
