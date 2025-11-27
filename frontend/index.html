@@ -146,36 +146,26 @@
                 const formData = new FormData();
                 formData.append("file", fileInput.files[0]);
 
-                console.log("Sending request to http://localhost:5000/api/predict");
-                
-                const res = await fetch("http://localhost:5000/api/predict", {
+                const res = await fetch("http://10.16.162.224:5000/api/predict", {
                     method: "POST",
                     body: formData
                 });
 
-                console.log("Response status:", res.status);
-                console.log("Response ok:", res.ok);
-
                 if (!res.ok) {
-                    const errBody = await res.text();
-                    console.error("Error body:", errBody);
-                    throw new Error(`API Error ${res.status}: ${errBody}`);
+                    throw new Error(`API Error: ${res.status}`);
                 }
 
                 let data = await res.json();
-                console.log("Parsed data:", data);
 
                 if (!data.filename || !data.predicted_class) {
-                    throw new Error(`Invalid response: ${JSON.stringify(data)}`);
+                    throw new Error("Invalid response from API");
                 }
 
                 localStorage.setItem("predictionResult", JSON.stringify(data));
-                console.log("Data saved to localStorage, redirecting to result.html");
-                window.location.assign("result.html");
+                window.location.href = "result.html";
 
             } catch (err) {
                 processingIndicator.style.display = "none";
-                console.error("Full error:", err);
                 alert("Error: " + err.message);
             }
         });
