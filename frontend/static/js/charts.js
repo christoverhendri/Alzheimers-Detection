@@ -149,97 +149,109 @@ document.addEventListener("DOMContentLoaded", () => {
     (async function loadAll() {
         try {
             // ---- SUMMARY ----
-            const summary = await fetchJson("http://192.168.1.6:5000/api/summary");
-            const s = document.getElementById("summary-cards");
-            s.innerHTML = `
-                <div class="summ-card">
-                    <div>👥</div>
-                    <div>${summary.total}</div>
-                    <span>Total Patients</span>
-                </div>
-                <div class="summ-card">
-                    <div>🏥</div>
-                    <div>${summary.percent_alzheimer}%</div>
-                    <span>Alzheimer %</span>
-                </div>
-                <div class="summ-card">
-                    <div>📅</div>
-                    <div>${summary.mean_age}</div>
-                    <span>Mean Age</span>
-                </div>
-                <div class="summ-card">
-                    <div>⚖️</div>
-                    <div style="font-size: 1.2rem;">
-                        <div class="gender-row male">M: ${summary.gender_male}%</div>
-                        <div class="gender-row female">F: ${summary.gender_female}%</div>
-                    </div>
-                    <span>Gender Ratio</span>
-                </div>
-            `;
+            try {
+                const summary = await fetchJson("http://192.168.1.6:5000/api/summary");
+                const s = document.getElementById("summary-cards");
+                if (s) {
+                    s.innerHTML = `
+                        <div class="summ-card">
+                            <div>👥</div>
+                            <div>${summary.total}</div>
+                            <span>Total Patients</span>
+                        </div>
+                        <div class="summ-card">
+                            <div>🏥</div>
+                            <div>${summary.percent_alzheimer}%</div>
+                            <span>Alzheimer %</span>
+                        </div>
+                        <div class="summ-card">
+                            <div>📅</div>
+                            <div>${summary.mean_age}</div>
+                            <span>Mean Age</span>
+                        </div>
+                        <div class="summ-card">
+                            <div>⚖️</div>
+                            <div style="font-size: 1.2rem;">
+                                <div class="gender-row male">M: ${summary.gender_male}%</div>
+                                <div class="gender-row female">F: ${summary.gender_female}%</div>
+                            </div>
+                            <span>Gender Ratio</span>
+                        </div>
+                    `;
+                }
+            } catch (e) {
+                console.warn('summary fetch failed', e);
+            }
 
             // ---- DIAGNOSIS COUNT ----
-            const diag = await fetchJson("http://192.168.1.6:5000/api/diagnosis_counts");
-            elegantBar(
-                document.getElementById("diagnosisChart").getContext("2d"),
-                diag.labels,
-                diag.values,
-                "Diagnosis Distribution",
-                "#4CC9F0", "#4895EF"
-            );
+            try {
+                const diag = await fetchJson("http://192.168.1.6:5000/api/diagnosis_counts");
+                const el = document.getElementById("diagnosisChart");
+                if (el && diag && diag.labels && diag.values) {
+                    elegantBar(el.getContext("2d"), diag.labels, diag.values, "Diagnosis Distribution", "#4CC9F0", "#4895EF");
+                } else console.warn('diagnosisChart skipped - missing element or data', el, diag);
+            } catch (e) {
+                console.warn('diagnosis_counts failed', e);
+            }
 
             // ---- AGE ----
-            const age = await fetchJson("http://192.168.1.6:5000/api/age_distribution");
-            elegantBar(
-                document.getElementById("ageChart").getContext("2d"),
-                age.labels,
-                age.counts,
-                "Age Distribution",
-                "#80ED99", "#38A3A5"
-            );
+            try {
+                const age = await fetchJson("http://192.168.1.6:5000/api/age_distribution");
+                const el = document.getElementById("ageChart");
+                if (el && age && age.labels && age.counts) {
+                    elegantBar(el.getContext("2d"), age.labels, age.counts, "Age Distribution", "#80ED99", "#38A3A5");
+                } else console.warn('ageChart skipped - missing element or data', el, age);
+            } catch (e) {
+                console.warn('age_distribution failed', e);
+            }
 
             // ---- BMI ----
-            const bmi = await fetchJson("http://192.168.1.6:5000/api/bmi_stats");
-            const bmiLabels = Object.keys(bmi).map(k => diagnosisMap[k] || k);
-            const bmiMeans = Object.keys(bmi).map(k => bmi[k].mean);
-
-            elegantBar(
-                document.getElementById("bmiChart").getContext("2d"),
-                bmiLabels,
-                bmiMeans,
-                "Mean BMI",
-                "#FFB703", "#FB8500"
-            );
+            try {
+                const bmi = await fetchJson("http://192.168.1.6:5000/api/bmi_stats");
+                const el = document.getElementById("bmiChart");
+                if (el && bmi && Object.keys(bmi).length) {
+                    const bmiLabels = Object.keys(bmi).map(k => diagnosisMap[k] || k);
+                    const bmiMeans = Object.keys(bmi).map(k => bmi[k].mean);
+                    elegantBar(el.getContext("2d"), bmiLabels, bmiMeans, "Mean BMI", "#FFB703", "#FB8500");
+                } else console.warn('bmiChart skipped - missing element or data', el, bmi);
+            } catch (e) {
+                console.warn('bmi_stats failed', e);
+            }
 
             // ---- EDUCATION ----
-            const edu = await fetchJson("http://192.168.1.6:5000/api/education_vs_diagnosis");
-            new Chart(document.getElementById("eduChart"), {
-                type: "bar",
-                data: {
-                    labels: edu.labels,
-                    datasets: [
-                        { label: "No Dementia", data: edu.no_dementia, backgroundColor: "#4CC9F0" },
-                        { label: "Dementia", data: edu.dementia, backgroundColor: "#F72585" }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: { x: { stacked: true }, y: { stacked: true } }
-                }
-            });
+            try {
+                const edu = await fetchJson("http://192.168.1.6:5000/api/education_vs_diagnosis");
+                const el = document.getElementById("eduChart");
+                if (el && edu && edu.labels) {
+                    new Chart(el.getContext("2d"), {
+                        type: "bar",
+                        data: {
+                            labels: edu.labels,
+                            datasets: [
+                                { label: "No Dementia", data: edu.no_dementia || [], backgroundColor: "#4CC9F0" },
+                                { label: "Dementia", data: edu.dementia || [], backgroundColor: "#F72585" }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: { x: { stacked: true }, y: { stacked: true } }
+                        }
+                    });
+                } else console.warn('eduChart skipped - missing element or data', el, edu);
+            } catch (e) {
+                console.warn('education_vs_diagnosis failed', e);
+            }
 
             // ---- SMOKING ----
             try {
                 const smoke = await fetchJson("http://192.168.1.6:5000/api/smoking_by_diag");
-                const smokeLabels = Object.keys(smoke).map(k => diagnosisMap[k] || k);
-                const smokeValues = Object.keys(smoke).map(k => smoke[k]);
-                elegantBar(
-                    document.getElementById("smokeChart").getContext("2d"),
-                    smokeLabels,
-                    smokeValues,
-                    "Smoking (mean)",
-                    "#72EFDD", "#56CFE1"
-                );
+                const el = document.getElementById("smokeChart");
+                if (el && smoke && Object.keys(smoke).length) {
+                    const smokeLabels = Object.keys(smoke).map(k => diagnosisMap[k] || k);
+                    const smokeValues = Object.keys(smoke).map(k => smoke[k]);
+                    elegantBar(el.getContext("2d"), smokeLabels, smokeValues, "Smoking (mean)", "#72EFDD", "#56CFE1");
+                } else console.warn('smokeChart skipped - missing element or data', el, smoke);
             } catch (e) {
                 console.warn('smoking_by_diag failed', e);
             }
@@ -247,15 +259,12 @@ document.addEventListener("DOMContentLoaded", () => {
             // ---- ALCOHOL ----
             try {
                 const alc = await fetchJson("http://192.168.1.6:5000/api/alcohol_stats");
-                const alcLabels = Object.keys(alc).map(k => diagnosisMap[k] || k);
-                const alcMeds = Object.keys(alc).map(k => alc[k].median);
-                elegantBar(
-                    document.getElementById("alcoholChart").getContext("2d"),
-                    alcLabels,
-                    alcMeds,
-                    "Alcohol (median)",
-                    "#FFAFCC", "#FF8FA3"
-                );
+                const el = document.getElementById("alcoholChart");
+                if (el && alc && Object.keys(alc).length) {
+                    const alcLabels = Object.keys(alc).map(k => diagnosisMap[k] || k);
+                    const alcMeds = Object.keys(alc).map(k => alc[k].median);
+                    elegantBar(el.getContext("2d"), alcLabels, alcMeds, "Alcohol (median)", "#FFAFCC", "#FF8FA3");
+                } else console.warn('alcoholChart skipped - missing element or data', el, alc);
             } catch (e) {
                 console.warn('alcohol_stats failed', e);
             }
@@ -263,79 +272,68 @@ document.addEventListener("DOMContentLoaded", () => {
             // ---- ACTIVITY ----
             try {
                 const act = await fetchJson("http://192.168.1.6:5000/api/activity_by_diag");
-                const actLabels = Object.keys(act).map(k => diagnosisMap[k] || k);
-                const actValues = Object.keys(act).map(k => act[k]);
-                elegantBar(
-                    document.getElementById("activityChart").getContext("2d"),
-                    actLabels,
-                    actValues,
-                    "Physical Activity",
-                    "#B5E48C", "#76C893"
-                );
+                const el = document.getElementById("activityChart");
+                if (el && act && Object.keys(act).length) {
+                    const actLabels = Object.keys(act).map(k => diagnosisMap[k] || k);
+                    const actValues = Object.keys(act).map(k => act[k]);
+                    elegantBar(el.getContext("2d"), actLabels, actValues, "Physical Activity", "#B5E48C", "#76C893");
+                } else console.warn('activityChart skipped - missing element or data', el, act);
             } catch (e) {
                 console.warn('activity_by_diag failed', e);
             }
 
             // ---- COGNITIVE ----
-            const cognitive = await fetchJson("http://192.168.1.6:5000/api/cognitive_stats");
-            const mmseLabels = Object.keys(cognitive).map(k => diagnosisMap[k] || k);
-            const mmseMeans = Object.keys(cognitive).map(k => cognitive[k]["MMSE"].mean);
-
-            elegantBar(
-                document.getElementById("mmseChart").getContext("2d"),
-                mmseLabels,
-                mmseMeans,
-                "MMSE Mean",
-                "#3A86FF", "#8338EC"
-            );
+            try {
+                const cognitive = await fetchJson("http://192.168.1.6:5000/api/cognitive_stats");
+                const el = document.getElementById("mmseChart");
+                if (el && cognitive && Object.keys(cognitive).length) {
+                    const mmseLabels = Object.keys(cognitive).map(k => diagnosisMap[k] || k);
+                    const mmseMeans = Object.keys(cognitive).map(k => cognitive[k]["MMSE"].mean);
+                    elegantBar(el.getContext("2d"), mmseLabels, mmseMeans, "MMSE Mean", "#3A86FF", "#8338EC");
+                } else console.warn('mmseChart skipped - missing element or data', el, cognitive);
+            } catch (e) {
+                console.warn('cognitive_stats failed', e);
+            }
 
             // ---- RADAR ----
-            const radar = await fetchJson("http://192.168.1.6:5000/api/radar_data");
-            elegantRadar(
-                document.getElementById("radarChart").getContext("2d"),
-                radar.labels,
-                radar.datasets
-            );
+            try {
+                const radar = await fetchJson("http://192.168.1.6:5000/api/radar_data");
+                const el = document.getElementById("radarChart");
+                if (el && radar && radar.labels && radar.datasets) {
+                    elegantRadar(el.getContext("2d"), radar.labels, radar.datasets);
+                } else console.warn('radarChart skipped - missing element or data', el, radar);
+            } catch (e) {
+                console.warn('radar_data failed', e);
+            }
 
             // ---- CORRELATION (Top 5 by absolute value) ----
-            const corr = await fetchJson("http://192.168.1.6:5000/api/correlation_diagnosis");
-
-            // gabungkan fitur + nilai
-            let pairs = corr.features.map((f, i) => ({
-                feature: f,
-                value: corr.values[i]
-            }));
-
-            // sort by absolute correlation (descending)
-            pairs.sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
-
-            // ambil top 5
-            const top5 = pairs.slice(0, 5);
-
-            let html = `
-            <table class="corr">
-                <tr><th>Feature</th><th>Correlation</th></tr>
-            `;
-
-            top5.forEach(p => {
-                const v = p.value;
-                const color = v > 0 
-                    ? `rgba(255, 99, 132, ${Math.abs(v)})`      // merah jika positif
-                    : `rgba(54, 162, 235, ${Math.abs(v)})`;     // biru jika negatif
-
-                html += `
-                    <tr>
-                        <td>${p.feature}</td>
-                        <td style="background:${color}; color:white; font-weight:600;">
-                            ${v}
-                        </td>
-                    </tr>
-                `;
-            });
-
-            html += "</table>";
-
-            document.getElementById("corrTable").innerHTML = html;
+            try {
+                const corr = await fetchJson("http://192.168.1.6:5000/api/correlation_diagnosis");
+                if (corr && corr.features && corr.values) {
+                    let pairs = corr.features.map((f, i) => ({ feature: f, value: corr.values[i] }));
+                    pairs.sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
+                    const top5 = pairs.slice(0, 5);
+                    let html = `
+                    <table class="corr">
+                        <tr><th>Feature</th><th>Correlation</th></tr>
+                    `;
+                    top5.forEach(p => {
+                        const v = p.value;
+                        const color = v > 0 ? `rgba(255, 99, 132, ${Math.abs(v)})` : `rgba(54, 162, 235, ${Math.abs(v)})`;
+                        html += `
+                            <tr>
+                                <td>${p.feature}</td>
+                                <td style="background:${color}; color:white; font-weight:600;">${v}</td>
+                            </tr>
+                        `;
+                    });
+                    html += "</table>";
+                    const ct = document.getElementById("corrTable");
+                    if (ct) ct.innerHTML = html;
+                } else console.warn('corrTable skipped - missing corr data', corr);
+            } catch (e) {
+                console.warn('correlation_diagnosis failed', e);
+            }
 
         } catch (err) {
             console.error('Dashboard load failed', err);
