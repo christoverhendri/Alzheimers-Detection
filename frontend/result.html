@@ -7,54 +7,74 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="static/css/base.css">
+    <link rel="stylesheet" href="static/css/base.css?v=999">
     <style>
         .result-container {
             text-align: center;
-            animation: slideInRight 0.6s ease-out;
+            animation: slideInUp 0.6s ease-out;
         }
 
         .prediction-card {
-            background: linear-gradient(135deg, var(--color-primary) 0%, #2c4a7a 100%);
-            color: white;
-            padding: 40px;
-            border-radius: 16px;
-            margin: 30px 0;
-            box-shadow: var(--shadow-lg);
+            background: var(--surface);
+            color: var(--text);
+            padding: var(--spacing-3xl);
+            border-radius: var(--radius);
+            margin: var(--spacing-xl) 0;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            border-top: 4px solid var(--primary);
+        }
+
+        .prediction-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-2) 100%);
         }
 
         .prediction-class {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 700;
-            margin: 20px 0;
+            margin: var(--spacing-lg) 0;
             letter-spacing: -1px;
+            color: var(--text);
         }
 
         .confidence-score {
-            font-size: 3rem;
+            font-size: 4rem;
             font-weight: 700;
-            color: var(--color-secondary);
-            margin: 20px 0;
+            color: var(--primary);
+            margin: var(--spacing-lg) 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .confidence-label {
-            font-size: 1rem;
-            opacity: 0.9;
+            font-size: 1.1rem;
+            color: var(--muted);
+            font-weight: 500;
+            margin-bottom: var(--spacing-sm);
         }
 
         .progress-bar {
             width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-            margin: 20px 0;
+            height: 14px;
+            background: var(--bg-2);
+            border-radius: 50px;
+            margin: var(--spacing-xl) 0;
             overflow: hidden;
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--color-secondary), #00acc1);
-            border-radius: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-2) 100%);
+            border-radius: 50px;
             animation: widthAnim 1.5s ease-out;
         }
 
@@ -64,28 +84,32 @@
         }
 
         .mri-image {
-            max-width: 350px;
+            max-width: 450px;
+            width: 100%;
             height: auto;
-            border-radius: 12px;
-            box-shadow: var(--shadow-lg);
-            margin: 30px auto;
-            border: 4px solid var(--color-secondary);
-            animation: slideInRight 0.7s ease-out 0.2s backwards;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin: var(--spacing-xl) auto;
+            border: none;
+            animation: slideInUp 0.7s ease-out 0.2s backwards;
         }
 
         .detail-info {
-            background: var(--color-neutral-light);
-            padding: 20px;
-            border-radius: 12px;
-            margin: 30px 0;
+            background: var(--surface);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius);
+            margin: var(--spacing-xl) 0;
             text-align: left;
+            box-shadow: var(--shadow);
+            border: none;
         }
 
         .detail-row {
             display: flex;
             justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--color-neutral-gray);
+            align-items: center;
+            padding: var(--spacing-md) 0;
+            border-bottom: 1px solid var(--border-soft);
         }
 
         .detail-row:last-child {
@@ -93,23 +117,39 @@
         }
 
         .detail-label {
-            color: var(--color-text-secondary);
+            color: var(--muted);
             font-weight: 500;
+            font-size: 0.95rem;
         }
 
         .detail-value {
-            color: var(--color-primary);
+            color: var(--text);
             font-weight: 700;
+            font-size: 1rem;
         }
 
         .status-badge {
             display: inline-block;
-            padding: 8px 20px;
-            background: var(--color-secondary);
-            color: white;
-            border-radius: 20px;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+            color: #FFFFFF;
+            border-radius: 50px;
             font-weight: 600;
-            margin-top: 15px;
+            margin-top: var(--spacing-lg);
+            box-shadow: 0 4px 20px rgba(47, 111, 219, 0.25);
+        }
+
+        .error-message {
+            padding: var(--spacing-xl);
+            text-align: center;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            color: var(--muted);
+        }
+
+        .error-message p {
+            margin: var(--spacing-sm) 0;
         }
     </style>
 </head>
@@ -140,14 +180,21 @@
         </div>
     </main>
 
+    <footer>
+        <div class="container">
+            <p>© 2025 Remember Me Do. All rights reserved.</p>
+            <p style="font-size: 0.9rem; margin-top: var(--spacing-sm);">Advanced AI for Alzheimer's Detection</p>
+        </div>
+    </footer>
+
     <script>
         const data = JSON.parse(localStorage.getItem("predictionResult"));
 
         if (!data) {
             document.getElementById("resultBox").innerHTML = `
-                <div style="padding: 40px; text-align: center;">
-                    <p style="color: var(--color-error); font-size: 1.1rem;">❌ No prediction found</p>
-                    <p>Please upload an image to get a prediction</p>
+                <div class="error-message">
+                    <p style="color: var(--muted); font-size: 1.1rem; margin-bottom: var(--spacing-sm);">❌ No prediction found</p>
+                    <p style="color: var(--muted);">Please upload an image to get a prediction</p>
                 </div>
             `;
         } else {
@@ -167,7 +214,7 @@
                     <span class="status-badge">✓ Analysis Complete</span>
                 </div>
 
-                <img src="${data.image_url}" class="mri-image">
+                <img src="${data.image_url}" class="mri-image" alt="MRI Scan Result">
 
                 <div class="detail-info">
                     <div class="detail-row">
@@ -188,7 +235,7 @@
                     </div>
                 </div>
 
-                <p style="color: var(--color-text-secondary); font-size: 0.9rem; margin-top: 20px;">
+                <p style="color: var(--muted); font-size: 0.9rem; margin-top: var(--spacing-xl); padding: var(--spacing-lg); background: var(--bg-2); border-radius: var(--radius);">
                     ℹ️ This prediction is based on AI model analysis. Please consult with a healthcare professional for medical diagnosis.
                 </p>
             `;
