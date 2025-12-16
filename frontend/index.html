@@ -7,27 +7,89 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="static/css/base.css">
+    <link rel="stylesheet" href="static/css/base.css?v=999">
     <style>
+        .predict-container {
+            padding: 36px 0 48px;
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
         .upload-card {
-            background: linear-gradient(135deg, rgba(30, 58, 95, 0.02) 0%, rgba(0, 188, 212, 0.02) 100%);
-            border: 2px dashed var(--color-secondary);
+            background: var(--bg-2);
+            border: 2px dashed rgba(47, 111, 219, 0.4);
             padding: 60px 40px;
             text-align: center;
-            border-radius: 16px;
+            border-radius: var(--radius);
             transition: var(--transition);
             cursor: pointer;
-            margin: 30px 0;
+            margin: 22px auto 24px;
+            max-width: 760px;
+            min-height: 320px;
+            max-height: 380px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(47, 111, 219, 0.06) 0%, rgba(36, 89, 181, 0.04) 100%);
+            opacity: 0;
+            transition: var(--transition);
         }
 
         .upload-card:hover {
-            border-color: var(--color-primary);
-            background: linear-gradient(135deg, rgba(30, 58, 95, 0.05) 0%, rgba(0, 188, 212, 0.05) 100%);
+            border-color: var(--primary);
+            background: var(--surface);
+            transform: translateY(-2px);
+        }
+
+        .upload-card:hover::before {
+            opacity: 1;
+        }
+
+        .upload-card.dragover {
+            border-color: var(--primary-2);
+            background: var(--surface);
+            transform: scale(1.01);
+            box-shadow: var(--shadow);
+        }
+
+        .upload-card.dragover::before {
+            opacity: 1;
         }
 
         .upload-icon {
             font-size: 4rem;
-            margin-bottom: 15px;
+            margin-bottom: var(--spacing-md);
+            opacity: 0.5;
+            position: relative;
+            z-index: 1;
+        }
+
+        .upload-card h3 {
+            margin: var(--spacing-sm) 0;
+            color: var(--text);
+            position: relative;
+            z-index: 1;
+            font-size: 1.35rem;
+        }
+
+        .upload-card p {
+            color: var(--muted);
+            margin: 0;
+            position: relative;
+            z-index: 1;
+            font-size: 0.95rem;
         }
 
         input[type="file"] {
@@ -41,23 +103,32 @@
         .processing {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: var(--spacing-md);
             justify-content: center;
-            margin-top: 20px;
-            color: var(--color-secondary);
+            margin-top: var(--spacing-lg);
+            color: var(--primary);
+            font-weight: 500;
         }
 
         .spinner {
-            border: 3px solid rgba(0, 188, 212, 0.2);
+            border: 3px solid rgba(47, 111, 219, 0.3);
             border-radius: 50%;
-            border-top-color: var(--color-secondary);
-            width: 24px;
-            height: 24px;
+            border-top-color: var(--primary);
+            width: 32px;
+            height: 32px;
             animation: spin 1s linear infinite;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+
+        #result {
+            margin-top: var(--spacing-xl);
+            padding: var(--spacing-xl);
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
         }
     </style>
 </head>
@@ -67,27 +138,27 @@
         <div class="nav-left">🧠 Remember Me Do</div>
         <div class="nav-right">
             <a href="home.html">Home</a>
-            <a href="index.html">Predict</a>
+            <a href="index.html" class="active">Predict</a>
             <a href="dashboard.html">Patient Info</a>
         </div>
     </nav>
 
     <main>
-        <div class="container">
-            <h2>MRI Dementia Status Prediction</h2>
-            <p class="subtitle">Upload MRI image untuk analisis tingkat demensia berbasis AI</p>
+        <div class="predict-container">
+            <h1 class="page-title text-center">MRI Dementia Status Prediction</h1>
+            <p class="page-sub text-center">Upload MRI image untuk analisis tingkat demensia berbasis AI</p>
 
             <form id="uploadForm">
                 <div class="upload-card" id="uploadArea">
                     <div class="upload-icon">📁</div>
-                    <h3 style="margin: 15px 0; color: var(--color-primary);">Upload MRI Image</h3>
-                    <p style="color: var(--color-text-secondary); margin: 0;">
+                    <h3>Upload MRI Image</h3>
+                    <p>
                         Drag and drop your MRI image here or click to select
                     </p>
                     <input type="file" id="file" name="file" accept="image/*" required />
                 </div>
 
-                <button type="submit" class="btn">🔍 Analyze & Predict</button>
+                <button type="submit" class="btn" style="display: block; margin: 0 auto;">🔍 Analyze & Predict</button>
             </form>
 
             <div id="processingIndicator" class="processing" style="display: none;">
@@ -99,6 +170,13 @@
         </div>
     </main>
 
+    <footer>
+        <div class="container">
+            <p>© 2025 Remember Me Do. All rights reserved.</p>
+            <p style="font-size: 0.9rem; margin-top: var(--spacing-sm);">Advanced AI for Alzheimer's Detection</p>
+        </div>
+    </footer>
+
     <script>
         const uploadArea = document.getElementById("uploadArea");
         const fileInput = document.getElementById("file");
@@ -108,19 +186,21 @@
         // Drag and drop
         uploadArea.addEventListener("dragover", (e) => {
             e.preventDefault();
-            uploadArea.style.borderColor = "var(--color-primary)";
-            uploadArea.style.background = "rgba(0, 188, 212, 0.05)";
+            uploadArea.classList.add("dragover");
         });
 
         uploadArea.addEventListener("dragleave", () => {
-            uploadArea.style.borderColor = "var(--color-secondary)";
-            uploadArea.style.background = "linear-gradient(135deg, rgba(30, 58, 95, 0.02) 0%, rgba(0, 188, 212, 0.02) 100%)";
+            uploadArea.classList.remove("dragover");
         });
 
         uploadArea.addEventListener("drop", (e) => {
             e.preventDefault();
-            uploadArea.style.borderColor = "var(--color-secondary)";
+            uploadArea.classList.remove("dragover");
             fileInput.files = e.dataTransfer.files;
+            if (fileInput.files[0]) {
+                uploadArea.querySelector("p").textContent = `Selected: ${fileInput.files[0].name}`;
+                uploadArea.querySelector("h3").style.color = "var(--primary)";
+            }
         });
 
         uploadArea.addEventListener("click", () => fileInput.click());
@@ -128,7 +208,7 @@
         fileInput.addEventListener("change", () => {
             if (fileInput.files[0]) {
                 uploadArea.querySelector("p").textContent = `Selected: ${fileInput.files[0].name}`;
-                uploadArea.querySelector("h3").style.color = "var(--color-secondary)";
+                uploadArea.querySelector("h3").style.color = "var(--primary)";
             }
         });
 
@@ -153,18 +233,15 @@
 
                 if (!res.ok) {
                     throw new Error(`API Error: ${res.status}`);
-                    throw new Error(`API Error: ${res.status}`);
                 }
 
                 let data = await res.json();
 
                 if (!data.filename || !data.predicted_class) {
                     throw new Error("Invalid response from API");
-                    throw new Error("Invalid response from API");
                 }
 
                 localStorage.setItem("predictionResult", JSON.stringify(data));
-                window.location.href = "result.html";
                 window.location.href = "result.html";
 
             } catch (err) {
