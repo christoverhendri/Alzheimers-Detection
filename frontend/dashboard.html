@@ -11,14 +11,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="static/css/base.css">
-    <link rel="stylesheet" href="static/css/dashboard.css">
+    <link rel="stylesheet" href="static/css/base.css?v=999">
+    <link rel="stylesheet" href="static/css/dashboard.css?v=999">
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body.dashboard-page main {
+            display: block;
+        }
+    </style>
 </head>
 
-<body>
+<body class="dashboard-page">
 
     <!-- NAVBAR -->
     <nav class="navbar">
@@ -26,16 +31,16 @@
         <div class="nav-right">
             <a href="home.html">Home</a>
             <a href="index.html">Predict</a>
-            <a href="dashboard.html">Patient Info</a>
+            <a href="dashboard.html" class="active">Patient Info</a>
         </div>
     </nav>
 
-    <main style="display: block; flex: 1; padding: 0; min-height: calc(100vh - 70px);">
-        <div style="max-width: 1400px; margin: 0 auto; padding: 48px 24px;">
+    <main>
+        <div class="dashboard-container">
 
         <!-- PAGE TITLE -->
-        <h1 style="text-align: center; margin-bottom: 48px; font-size: 2.5rem;">📊 Patient Dashboard</h1>
-           <div id="dashboardError" style="display:none; margin:12px 0; padding:12px; border-radius:8px; background:#ffecec; color:#8a1f1f;"></div>
+        <h1 class="dashboard-title">📊 Patient Dashboard</h1>
+        <div id="dashboardError" style="display:none;"></div>
 
         <!-- ============================
              SECTION 1 — SUMMARY (KPI CARDS)
@@ -128,12 +133,19 @@
         <section>
             <h2 class="section-title">Feature Correlation with Diagnosis</h2>
             <div class="card scroll-x">
-                <div id="corrTable" style="padding: 20px;"></div>
+                <div id="corrTable" style="padding: var(--spacing-md);"></div>
             </div>
         </section>
 
         </div>
     </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2025 Remember Me Do. All rights reserved.</p>
+            <p style="font-size: 0.9rem; margin-top: var(--spacing-sm);">Advanced AI for Alzheimer's Detection</p>
+        </div>
+    </footer>
 
     <!-- JS -->
     <script src="static/js/charts.js"></script>
